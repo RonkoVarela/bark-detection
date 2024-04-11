@@ -34,10 +34,10 @@ def main(baseline):
         "automatic-speech-recognition",
         model=baseline,
         device=DEVICE)
-    sample = data[0]["audio"]
-    print("file", data[0]["file"])
+    sample = data[0]
+    audio = sample["audio"]
     print("predict")
-    prediction = model(sample)["text"]
+    prediction = model(audio)["text"]
     print("prediction:", prediction)
 
 
