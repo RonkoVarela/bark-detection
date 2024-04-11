@@ -7,6 +7,7 @@ from transformers import AutoModelForAudioClassification
 from transformers import WhisperProcessor, WhisperForConditionalGeneration
 
 import torch
+import click
 
 
 DEVICE = "cuda:0" if torch.cuda.is_available() else "cpu"
@@ -21,19 +22,23 @@ def main(baseline):
     """Main Function
 
     Example:
-    python test_whisper.py --baseline openai/whisper-tiny.en
+    python test_whisper.py [OPTIONS]
+
+    Options:
+    - --baseline: model to use to predict, default "openai/whisper-tiny.en"
     """
     print("load data")
     data = load_dataset(DATASET_REPO, split="test")
     print("load model")
-    model = pipeline.from_pretrained(
+    model = pipeline(
         "automatic-speech-recognition",
         model=baseline,
         device=DEVICE)
     sample = data[0]["audio"]
+    print("file", data[0]["file"])
     print("predict")
     prediction = model(sample)["text"]
-    print(prediction)
+    print("prediction:", prediction)
 
 
 if __name__ == '__main__':
