@@ -25,7 +25,7 @@ def compute_metrics(eval_pred):
     logits, labels = eval_pred
     predictions = np.argmax(logits, axis=1)
     return {
-        metric: function.compute(predictions=predictions, references=labels)
+        metric: function.compute(predictions=predictions, references=labels).get(metric)
         for metric, function in METRICS_DICT.items()
     }
 
