@@ -6,7 +6,7 @@ import librosa
 
 model = pipeline('audio-classification',
                  model='rmarcosg/bark-detection',
-                 feature_extractor='rmarcosg/bark-detection',
+                 feature_extractor='facebook/wav2vec2-base-960h',
                 )
 
 app = FastAPI()
