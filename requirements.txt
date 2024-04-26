@@ -1,6 +1,6 @@
 torch==2.2.2
 torchaudio==2.2.2
-datasets==2.18.0[audio]
+datasets[audio]==2.18.0
 transformers==4.39.3
 evaluate==0.4.1
 click==8.1.7

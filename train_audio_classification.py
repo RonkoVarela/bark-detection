@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
 from datasets import load_dataset
+from datasets import Audio
 import evaluate
-from transformers import Wav2Vec2ForSequenceClassification, Wav2Vec2CTCTokenizer
+from transformers import Wav2Vec2ForSequenceClassification, Wav2Vec2FeatureExtractor
 from transformers import TrainingArguments, Trainer
-from transformers import Wav2Vec2ForSequenceClassification, Wav2Vec2ForCTC
 
 
 import torch
@@ -48,18 +48,18 @@ def main():
 
     print("load model")
     model = Wav2Vec2ForSequenceClassification.from_pretrained(BASELINE_MODEL, num_labels=2).to(DEVICE)
-    feature_extractor = Wav2Vec2FeatureExtractor.from_pretrained(BASELINE_MODEL)
+    feature_extractor = Wav2Vec2FeatureExtractor.from_pretrained(BASELINE_MODEL).to(DEVICE)
 
     # pre-encode dataset
     def prepare_sample(sample):
-        # resample from 44.1 kHz to 16 kHz (44.1 kHz / 3 ~ 16 kHz)
-        audio = sample["audio"]["array"][::3]
+        audio = sample["audio"]["array"]
         return {'input_values': feature_extractor(audio, sampling_rate=16000).input_values[0]}
-
-    encoded_data = data.map(prepare_sample, batched=False)
+    
+    resampled_data = data.cast_column("audio", Audio(sampling_rate=16000))
+    encoded_data = data.map(prepare_sample, batched=False, batch)
     train_dataset = encoded_data["train"]
     validation_dataset = encoded_data["validation"]
-    test_dataset = test_data["test"]
+    test_dataset = encoded_data["test"]
 
     training_args = TrainingArguments(
         output_dir="./output",
