@@ -56,7 +56,7 @@ def main():
         return {'input_values': feature_extractor(audio, sampling_rate=16000).input_values[0]}
     
     resampled_data = data.cast_column("audio", Audio(sampling_rate=16000))
-    encoded_data = data.map(prepare_sample, batched=False, batch)
+    encoded_data = data.map(prepare_sample, batched=False)
     train_dataset = encoded_data["train"]
     validation_dataset = encoded_data["validation"]
     test_dataset = encoded_data["test"]
